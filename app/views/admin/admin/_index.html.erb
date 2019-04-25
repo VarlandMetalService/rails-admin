@@ -1,0 +1,95 @@
+<style>
+  @media (min-width: 992px) {
+    .container-scroll {
+      overflow-x: auto !important;
+      white-space: nowrap !important;
+    }
+    .container-scroll > .row > .col-md-2 {
+      float: none !important;
+    }
+  } 
+  .container-scroll > .row {
+    margin-top: 2px;
+    flex-wrap: nowrap;
+  }
+  .container-scroll > .row > .col-md-2 {
+    text-align: center;
+  }
+</style>
+<div class='card'>
+  <div class='card-header text-center'>
+    <h2>Index of <code><%= @objects.first.class.name.pluralize %></code></h2>
+    <%= link_to fa_icon('plus', 
+        text: "New"),
+        new_path(model: @objects.first.class.name),
+        class: 'btn btn-outline-secondary',
+        title: 'New',
+        data: { toggle: 'tooltip' } %>
+    <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      Filter
+    </button>
+    <%= link_to 'reset', index_path(model: params[:model], includes: params[:includes], where: ""), method: :get, class: '', data: { disable_with: fa_icon('spinner spin', text: '<small>*reseting...*</small>'.html_safe)} %>
+    <div id='filter_dropdown' class='dropdown-menu px-4 py-3' style=''>
+      <%= simple_form_for '', url: index_path, method: :get,  remote: true do |form| %>
+        <%= form.hidden_field :model, value: @objects.first.class.name %>
+        <%= form.hidden_field :includes, value: @includes %>
+        <%= form.input :where, placeholder: 'where(*input*)', hint: "enclose strings in  \" \" <br> column_name LIKE \"%text%\" <br> column_name IN (\"option 1\", \"option 2\", \"option 3\") <br> AND & OR work too! ".html_safe, label: 'Filter Results', required: false %>
+        <%= form.button :submit, "submit", class: 'btn btn-block btn-outline-secondary', id: 'filter_submit' %>
+        <div id='where_storage' style='display: none;'>
+        </div>
+      <% end -%>
+    </div>
+  </div>
+  <div class='card-body'>
+    <div class='container-fluid container-scroll'>
+      <div class='row' id='header_row'>
+        <div class='col-md-2'>
+          <strong><u>
+            <%= link_to fa_icon('sort', text: 'id'), 'javascript:void(0);', 
+                remote: true,
+                    id: "header_#{@objects.first.class.name.demodulize}id", 
+                  data: { model: @objects.first.class.name, 
+                           path: index_path.to_s },
+               onclick: "$('#content_area').fadeOut('fast'); admin_sort('#{'id'}');" %>
+          </u></strong>
+        </div>
+        <% get_attributes(@objects.first.class).each do |attribute| -%>
+          <% if attribute.include?('encrypted') -%>
+            <% if attribute.include?('_iv') -%>
+              <% next -%>
+            <% else -%>
+              <% attribute = attribute.remove('encrypted_') -%>
+            <% end -%>
+          <% end -%>
+          <div class='col-md-2'>
+            <strong><u>
+              <%= link_to fa_icon('sort', text: attribute), 'javascript:void(0);', 
+                  remote: true, 
+                      id: "header_#{@objects.first.class.name.demodulize}#{attribute}",
+                    data: { model: @objects.first.class.name, 
+                    path: index_path.to_s }, 
+                 onclick: "$('#content_area').fadeOut('fast'); admin_sort('#{attribute}');" %>
+            </u></strong>
+          </div>
+        <% end -%>
+        <% get_associations(@objects.first.class).each do |association| -%>
+          <div class='col-md-2'>
+            <strong><u><%= association.name %></u></strong>
+            
+          </div>
+          <% end -%>
+          <div class='col-md-2'>
+          </div>
+      </div>
+      <%= render partial: 'row', collection: @objects, as: :thing %>
+    </div>
+  </div>
+  <div class='card-footer'>
+    <div class='text-right'>
+      <%== pagy_info(@pagy) %>
+    </div>
+    <div class='pull-right'>
+      <%== pagy_bootstrap_nav(@pagy) %>
+    </div>
+  </div>
+</div>

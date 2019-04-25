@@ -1,0 +1,11 @@
+$('.invalid-feedback').remove();
+$('.is-invalid').removeClass('is-invalid');
+<% @object.errors.each do |attribute, error| -%>
+$('#object_<%= attribute %>').addClass('is-invalid')
+$('#object_<%= attribute %>').after(`<div class='invalid-feedback'><%= error %></div>`)
+<% end -%>
+<% if @updated -%>
+  $("#content_area > *:not('#history_area')").remove();
+  $('#content_area').append('<%= j render partial: 'show' %>')
+<% end -%>
+flash('<%= j render 'layouts/flash' %>');

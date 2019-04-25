@@ -1,0 +1,10 @@
+$('#filter_submit').attr('disabled', false);
+$(".dropdown-menu.show").dropdown('toggle')
+$('#content_area').empty().append('<%= j render partial: 'index' %>')
+<% unless @attribute == " " && @class == " " -%>
+  $("#header_<%= @objects.first.class.name.demodulize %><%= @attribute %>").addClass('<%= @class %>').html(('<%= @class == 'sort_up' ? fa_icon('sort-up', text: @attribute):fa_icon('sort-down', text: @attribute) %>'))
+<% end -%>
+
+$('#where').val('<%= @where.html_safe unless @where.blank? %>')
+$('#where_storage').data('where', '<%= @where.html_safe unless @where.blank? %>')
+flash('<%= j render 'layouts/flash' %>');

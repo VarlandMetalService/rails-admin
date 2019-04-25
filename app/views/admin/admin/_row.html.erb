@@ -1,0 +1,57 @@
+<% bg_color = 'background-color: #efefef;' unless thing_counter.even? -%>
+<div class='row' style='<%= bg_color %>' id='<%= thing.class.name.demodulize %><%= thing.id %>'>
+  <div class='col-md-2' style='<%= bg_color %>'>
+    <%= thing.id %>
+  </div>
+  <% get_attributes(thing.class).each do |attribute| -%>
+      <% next if attribute.include?('encrypted') && attribute.include?('_iv') -%>
+    <div class='col-md-2' style='<%= bg_color %> overflow-x: auto;'>
+      <% case thing[attribute] -%>
+      <% when Time -%>
+        <samp><%= thing[attribute].strftime("%D @ %T") %></samp>
+      <% when Integer -%>
+        <kbd><%= thing[attribute] %></kbd>
+      <% when Float -%>
+        <kbd><%= thing[attribute] %></kbd>
+      <% when TrueClass -%>
+        <div class='text-success'><%= thing[attribute] %></div>
+      <% when FalseClass -%>
+        <div class='text-danger'><%= thing[attribute] %></div>
+      <% when NilClass -%>
+        ---
+      <% else -%>
+        <% if attribute.include?('encrypted') -%>
+          <%= thing.send(attribute.remove('encrypted_')) %>
+        <% else %>
+          <%= thing[attribute] %>
+        <% end -%>
+      <% end -%>
+    </div>
+  <% end -%>
+  <% get_associations(thing.class).each do |association| -%>
+    <div class='col-md-2' style='<%= bg_color %> overflow-x: auto;'>
+      <%= admin_association_link(association, thing) %>
+    </div>
+  <% end -%>
+  <div class='col-md-2 text-right' style='<%= bg_color %>'>
+    <div class='btn-group' role='group'>
+      <%= link_to fa_icon('eye'),             
+            show_path(model: "#{thing.class.name.constantize}", id: thing.id), 
+            class: 'font-weight-bold btn btn-sm', 
+            title: 'Show' %>
+      <%= link_to fa_icon('pencil'), 
+            edit_path(model: "#{thing.class.name.constantize}", id: thing.id),
+            class: 'font-weight-bold btn btn-sm',
+            title: 'Edit',
+              data: { toggle: 'tooltip' } %>
+      <%= link_to fa_icon('times'), 
+            destroy_path(model: "#{thing.class.name.constantize}", id: thing.id),            
+            class: 'font-weight-bold btn btn-sm',
+            title: 'Delete',
+            remote: true,
+              data: { confirm: 'Are you sure?', 
+                      toggle: 'tooltip' } %>
+      <small class='text-muted my-auto'>id:<%= thing.id %></small>
+    </div>
+  </div>
+</div>

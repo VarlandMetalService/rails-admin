@@ -1,0 +1,27 @@
+<div class='container-fluid border rounded px-2 py-2 text-center'>
+  <h2>
+    <% if @object.persisted? -%> 
+      Edit <code><%= @object.class.name %></code> <%= @object.id %>
+    <% else -%>
+      New <code><%= @object.class.name %></code> 
+    <% end -%>
+  </h2>
+  <%= link_to fa_icon('list', text: 'index'), index_path(model: @object.class.name), class: 'admin_btn btn btn-outline-secondary', remote: true, data: { model: @object.class.name } %>
+</div>
+<div class='card my-3'>
+  <div class='card-body'>
+    <%= simple_form_for @object, as: :object, url: admin_path, remote: true do |form| %>
+      <%= form.hidden_field :model, value: @object.class.name %>
+      <%= form.hidden_field :id, value: @object.id %>
+
+      <% get_attributes(@object.class).each do |attribute| -%>
+        <%= form.input attribute, include_hidden: false%>
+      <% end -%>
+      
+      <% get_associations(@object.class).each do |association| -%>
+        <%= admin_association_form_field(association, form) %>
+      <% end -%>
+      <%= form.submit "Submit", class: "btn btn-secondary" %>
+    <% end -%>
+  </div>
+</div>

@@ -1,0 +1,28 @@
+<div class='col-2'>
+    <div class='card'>
+      <div class='card-body text-center'>
+        <%= 'namespaces'.html_safe unless app_models.first[0] == 'Object' %>
+        <% app_models.each do |scope| -%>
+          <% if scope[0] == 'Object' -%>
+            <%= '<hr>'.html_safe unless app_models.first[0] == 'Object' %>
+            non-scoped models
+            <% scope[1].each do |model| -%>
+              <%= admin model[0].demodulize.downcase.pluralize, model[0], {class: 'btn btn-primary btn-block text-right my-2', includes: model[1] } %>
+            <% end -%>
+            <hr>
+          <% else -%>
+            <div class='dropdown' id='<%= scope[0] %>_dropdown'>
+              <button class="btn btn-primary text-left btn-block dropdown-toggle my-2" type="button" id='<%= scope[0] %>_dropdown_btn' data-toggle="dropdown">
+                <%= scope[0] %>
+              </button>
+              <div class='dropdown-menu dropdown-menu-right'>
+                <% scope[1].each do |model| -%>
+                  <%= admin model[0].demodulize.downcase.pluralize, model[0], {class: 'dropdown-item ', includes: model[1] } %>
+                <% end -%>
+              </div>
+            </div>
+          <% end -%>
+        <% end -%>
+      </div>
+    </div>
+  </div>

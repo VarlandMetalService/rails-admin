@@ -1,0 +1,8 @@
+$('#<%= @object.class.name.demodulize %><%= @object.id %>').remove();
+$.each($('div[id="<%= @object.class.name.demodulize %><%= @object.id %>_history"]'), function(key,value){
+  $(value).remove();
+})
+count = $(`a[data-model='<%= @object.class.name %>']>span`)
+count.text(count.text() - 1)
+flash('<%= j render 'layouts/flash' %>');
+<% flash.discard %>

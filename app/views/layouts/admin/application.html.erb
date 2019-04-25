@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>admin</title>
+    <%= csrf_meta_tags %>
+    <%= stylesheet_link_tag "admin/application", media: "all" %>
+    <%= javascript_include_tag "admin/application" %>
+    <meta name="turbolinks-cache-control" content="no-cache">
+  </head>
+  <body>
+    <div class="container-fluid py-2" id='wrapper'>
+      <%= render partial: 'layouts/admin/flash' %>
+      <div class='form-row'>
+        <%= render partial: 'layouts/admin/sidebar' %>
+        <div class='col-10'>
+          <div id='content_area'>
+            <%= yield %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

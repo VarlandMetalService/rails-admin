@@ -1,0 +1,60 @@
+<div class='container-fluid border rounded px-2 py-2 text-center'>
+  <h2>Show <code><%= @object.class.name %></code> <%= @object.id %></h2>
+  <%= link_to fa_icon('list', text: 'index'), index_path(model: @object.class.name), class: 'admin_btn btn btn-outline-secondary', remote: true, data: { model: @object.class.name } %>
+  <%= link_to fa_icon('pencil', text: 'edit'), edit_path(model: @object.class.name, id: @object.id), class: 'admin_btn btn btn-outline-secondary', remote: true, data: { model: @object.class.name, id: @object.id } %>
+</div>
+
+<div class='card my-3'>
+  <div class='card-header'>
+    <h4><strong>Attributes</strong></h4>
+  </div>
+  <div class='card-body'>
+    <%= "<div class='mx-3'> No attributes to display...</div>".html_safe unless get_attributes(@object.class).present? %>
+    <% get_attributes(@object.class).each do |attribute| -%>
+      <div class='form-group'>       
+        <label class='form-control-label' style='font-size: 18px;'><%= attribute.titleize %></label>
+        <% unless @object[attribute].nil? -%>
+          <div class='container-fluid border rounded mx-0 bg-secondary-light'>
+            <% case @object[attribute] -%>
+            <% when Time -%>
+              <samp><%= @object[attribute].strftime("%D @ %T") %></samp>
+            <% when Integer -%>
+              <kbd><%= @object[attribute] %></kbd>
+            <% when Float -%>
+              <kbd><%= @object[attribute] %></kbd>
+            <% when TrueClass -%>
+              <div class='text-success'><%= @object[attribute] %></div>
+            <% when FalseClass -%>
+              <div class='text-danger'><%= @object[attribute] %></div>
+            <% when NilClass -%>
+              ---
+            <% else -%>
+              <%= @object[attribute] %>
+            <% end -%>
+          </div>
+        <% end -%>
+      </div>
+    <% end -%>
+  </div>
+</div>
+
+<div class='card my-3'>
+  <div class='card-header'>
+    <h4><strong>Associations</strong></h4>
+  </div>
+  <div class='card-body'>
+    <%= "No associations to display..." unless get_associations(@object.class).present? %>
+    <% get_associations(@object.class).each do |association| -%>
+      <div class='form-group'>       
+        <label class='form-control-label' style='font-size: 18px;'>
+          <%= association.name.to_s.titleize %>
+        </label>
+        <% unless @object.send(association.name).blank? -%>
+          <div class='container-fluid border rounded mx-0 bg-secondary-light'>
+            <%= admin_association_link(association, @object) %>
+          </div>
+        <% end -%>
+      </div>
+    <% end -%>
+  </div>
+</div>

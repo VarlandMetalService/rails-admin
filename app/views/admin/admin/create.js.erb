@@ -1,0 +1,9 @@
+<% if @object.persisted? -%>
+  $("#content_area > *:not('#history_area')").remove();
+  $('#content_area').append('<%= j render partial: 'show' %>')
+  $("ul").find(`[data-model='<%= @object.class.name %>']`).css('background-color', 'red')
+
+  count = $(`a[data-model='<%= @object.class.name %>']>span`)
+  count.text(parseInt(count.text()) + 1)
+<% end -%>
+flash('<%= j render 'layouts/flash' %>');
