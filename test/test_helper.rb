@@ -18,3 +18,19 @@ if ActiveSupport::TestCase.respond_to?(:fixture_path=)
   ActiveSupport::TestCase.file_fixture_path = ActiveSupport::TestCase.fixture_path + "/files"
   ActiveSupport::TestCase.fixtures :all
 end
+
+
+@temp = Project.new
+@temp.children = @projects
+render_children(@temp)
+
+def render_children(project)
+  html = ""
+  project.children.each do |child|
+    html << '<li> child'
+      if child.children.present?
+        html << '<ul>' << render_children(child) << '</ul>'
+      end
+    html << '</li>'
+  end
+end

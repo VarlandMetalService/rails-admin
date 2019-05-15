@@ -45,16 +45,30 @@
   <div class='card-body'>
     <%= "No associations to display..." unless get_associations(@object.class).present? %>
     <% get_associations(@object.class).each do |association| -%>
-      <div class='form-group'>       
-        <label class='form-control-label' style='font-size: 18px;'>
-          <%= association.name.to_s.titleize %>
-        </label>
-        <% unless @object.send(association.name).blank? -%>
-          <div class='container-fluid border rounded mx-0 bg-secondary-light'>
-            <%= admin_association_link(association, @object) %>
-          </div>
-        <% end -%>
-      </div>
+      <% unless association.name.to_s == 'files_blobs' -%>
+        <div class='form-group'>       
+          <label class='form-control-label' style='font-size: 18px;'>
+            <%= association.name.to_s.titleize %>
+          </label>
+          <% unless @object.send(association.name).blank? -%>
+            <div class='container-fluid border rounded mx-0 bg-secondary-light'>
+              <% if association.name.to_s == 'files_attachments' -%>
+                <% @object.send(association.name).each do |file| -%>
+                  <% if file.previewable? -%>
+                    <%= link_to image_tag(main_app.url_for(file.preview(resize: "200"))), main_app.rails_blob_path(file, disposition: :inline), target: '_blank' %>
+                  <% elsif file.variable? -%>
+                    <%= link_to image_tag(main_app.url_for(file.variant(resize: "200"))), main_app.rails_blob_path(file, disposition: :inline), target: '_blank' %>
+                  <% else -%>
+                    <%= link_to "#{file.filename}", main_app.rails_blob_path(file, disposition: :inline), target: '_blank' %>
+                  <% end -%>
+                <% end -%>
+              <% else -%>
+                <%= admin_association_link(association, @object) %>
+              <% end -%>
+            </div>
+          <% end -%>
+        </div>
+      <% end -%>
     <% end -%>
   </div>
 </div>
