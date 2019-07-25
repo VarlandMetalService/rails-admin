@@ -15,7 +15,7 @@
       <%= form.hidden_field :id, value: @object.id %>
 
       <% get_attributes(@object.class).each do |attribute| -%>
-        <%= form.input attribute, include_hidden: false%>
+        <%= form.input attribute, include_hidden: false, include_blank: true %>
       <% end -%>
       
       <% get_associations(@object.class).each do |association| -%>

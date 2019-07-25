@@ -6,7 +6,7 @@ require "admin/version"
 # Describe your gem and declare its dependencies:
 Gem::Specification.new do |spec|
   spec.name        = "admin"
-  spec.version     = 3.1
+  spec.version     = 3.2
   spec.authors     = ["Richard Legacy"]
   spec.email       = ["richard.legacy@varland.com"]
   spec.homepage    = ""
