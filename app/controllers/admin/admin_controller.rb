@@ -1,10 +1,9 @@
 module Admin
-  class AdminController < ::ApplicationController
-    layout 'layouts/admin/application'
+  class AdminController < ApplicationController
     include Pagy::Backend
-    protect_from_forgery with: :exception
+    include ActionController::MimeResponds
+    layout 'layouts/admin/application'
 
-    http_basic_authenticate_with name: "admin", password: "root"
     before_action :set_object, only: [:edit, :destroy]
     after_action -> { flash.discard }, if: -> { request.xhr? }
 

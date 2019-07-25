@@ -3,8 +3,10 @@ module Admin::AdminHelper
   include Pagy::Frontend;
 
   def app_models
-    Rails.configuration.eager_load_namespaces.each(&:eager_load!)
-    mdls = Hash[ActiveRecord::Base.descendants.reject{ |v| v.name == "Admin::ApplicationRecord" || v.name == 'Varland::VarlandRecord' || v.name == 'Thickness::ThicknessRecord'|| v.name == 'ApplicationRecord' || v.name == "ActiveRecord::SchemaMigration" || v.name.safe_constantize.blank? }.map(&:name).collect { |v| [v, v.constantize.reflect_on_all_associations.map(&:name) ] }]
+    x = Rails.configuration.eager_load_namespaces
+    x.delete(ActiveStorage::Engine)
+    x.each(&:eager_load!)
+    mdls = Hash[ActiveRecord::Base.descendants.reject{ |v| v.name == "Admin::ApplicationRecord" || v.name == 'ActiveStorage::Blob::Analyzable' || v.name == 'Thickness::ThicknessRecord'|| v.name == 'ApplicationRecord' || v.name == "ActiveRecord::SchemaMigration" || v.name.safe_constantize.blank? }.map(&:name).collect { |v| [v, v.constantize.reflect_on_all_associations.map(&:name) ] }]
     models = {}
     mdls.each do |model|
       if models[model[0].constantize.to_s].present?

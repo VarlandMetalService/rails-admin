@@ -8,7 +8,7 @@
             non-scoped models
             <% scope[1].each do |model| -%>
               <%= admin model[0].demodulize.downcase.pluralize, model[0], {class: 'btn btn-primary btn-block text-right my-2', includes: model[1] } %>
-            <% end -%>
+            <% end unless scope[1].blank? -%>
             <hr>
           <% else -%>
             <div class='dropdown' id='<%= scope[0] %>_dropdown'>
